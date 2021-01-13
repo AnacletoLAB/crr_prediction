@@ -1,3 +1,4 @@
+"""Module providing training sequences."""
 from .cnn_sequence import get_cnn_training_sequence
 from .mlp_sequence import get_mlp_training_sequence
 
