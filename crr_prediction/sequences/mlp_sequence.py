@@ -1,10 +1,11 @@
 """Module with epigenomic training sequence for the MLP."""
 import pandas as pd
+import numpy as np
 from keras_mixed_sequence import MixedSequence, VectorSequence
 
 
 def get_mlp_training_sequence(
-    X: pd.DataFrame,
+    X: np.values,
     y: pd.DataFrame,
     batch_size: int,
     seed: int
@@ -13,7 +14,7 @@ def get_mlp_training_sequence(
 
     Parameters
     --------------------
-    X: pd.DataFrame,
+    X: np.values,
         Epigenomic data.
     y: pd.DataFrame,
         Labels.
@@ -28,7 +29,7 @@ def get_mlp_training_sequence(
     """
     return MixedSequence(
         VectorSequence(
-            X.values,
+            X,
             batch_size=batch_size,
             seed=seed
         ),

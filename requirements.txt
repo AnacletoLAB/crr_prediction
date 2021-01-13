@@ -1,5 +1,8 @@
+pandas
+numpy
 ucsc_genomes_downloader
 epigenomic_dataset
 keras_bed_sequence
 keras_mixed_sequence
+meta_models
 tqdm
