@@ -5,7 +5,7 @@ from keras_mixed_sequence import MixedSequence, VectorSequence
 
 
 def get_mlp_training_sequence(
-    X: np.values,
+    X: np.ndarray,
     y: pd.DataFrame,
     batch_size: int,
     seed: int
@@ -14,7 +14,7 @@ def get_mlp_training_sequence(
 
     Parameters
     --------------------
-    X: np.values,
+    X: np.ndarray,
         Epigenomic data.
     y: pd.DataFrame,
         Labels.
