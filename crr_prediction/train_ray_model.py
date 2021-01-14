@@ -1,5 +1,6 @@
 """Module providing training method for meta models."""
 from typing import Dict
+import pandas as pd
 from keras_mixed_sequence import MixedSequence
 from meta_models.meta_models import MetaModel
 from extra_keras_metrics import get_standard_binary_metrics
@@ -52,7 +53,7 @@ def train_ray_model(
         metrics=get_standard_binary_metrics()
     )
     # Fitting the model
-    model.fit(
+    return pd.DataFrame(model.fit(
         train,
         validation_data=validation,
         epochs=max_epochs,
@@ -70,4 +71,4 @@ def train_ray_model(
             # we terminate the execution.
             TerminateOnNaN()
         ]
-    )
+    ).history)
