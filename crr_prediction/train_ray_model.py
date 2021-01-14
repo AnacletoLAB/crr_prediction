@@ -14,7 +14,7 @@ def train_ray_model(
     max_epochs: int,
     patience: int,
     min_delta: float,
-    **kwargs: Dict
+    config: Dict
 ):
     """Train the ray model.
 
@@ -32,31 +32,40 @@ def train_ray_model(
         Patience for early stopping.
     min_delta: float,
         Minimum delta for early stopping.
-    **kwargs: Dict,
+    config: Dict,
         Selected hyper-parameters.
     """
-    model = meta_model.build(**kwargs)
+    import silence_tensorflow.auto
+    # Build the selected model from the meta model
+    model = meta_model.build(**config)
+    # Compile it
     model.compile(
         optimizer='nadam',
         loss="binary_crossentropy",
+        # We add all the most common binary metrics
         metrics=get_standard_binary_metrics()
     )
+    # Fitting the model
     model.fit(
         train,
         validation_data=validation,
         epochs=max_epochs,
         verbose=False,
         callbacks=[
+            # We report the training performance at the end of each epoch
             TuneReportCallback(metrics=[
                 "{}{}".format(sub, metric)
                 for metric in model.metrics_names
                 for sub in ("", "val_")
             ], ),
+            # We kill the process when the training reaches a plateau
             EarlyStopping(
                 monitor="loss",
                 min_delta=min_delta,
                 patience=patience
             ),
+            # And if something very wrong happens and a NaN appears,
+            # we terminate the execution.
             TerminateOnNaN()
         ]
     )
