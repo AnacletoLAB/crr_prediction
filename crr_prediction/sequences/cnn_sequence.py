@@ -9,7 +9,7 @@ def get_cnn_training_sequence(
     genome: Genome,
     y: pd.DataFrame,
     batch_size: int,
-    seed: int
+    random_state: int
 ) -> MixedSequence:
     """Return training sequence for CNN.
 
@@ -21,8 +21,8 @@ def get_cnn_training_sequence(
         Labels.
     batch_size: int,
         Size of the batches.
-    seed: int,
-        Random seed to reproduce the generated sequences.
+    random_state: int,
+        Random state to reproduce the generated sequences.
 
     Returns
     ---------------------
@@ -33,11 +33,11 @@ def get_cnn_training_sequence(
             genome,
             bed=y.reset_index()[y.index.names],
             batch_size=batch_size,
-            seed=seed
+            random_state=random_state
         ),
         VectorSequence(
             y.values,
             batch_size=batch_size,
-            seed=seed,
+            random_state=random_state,
         )
     )

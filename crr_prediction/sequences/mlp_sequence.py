@@ -8,7 +8,7 @@ def get_mlp_training_sequence(
     X: np.ndarray,
     y: pd.DataFrame,
     batch_size: int,
-    seed: int
+    random_state: int
 ) -> MixedSequence:
     """Return training sequence for MLP.
 
@@ -20,8 +20,8 @@ def get_mlp_training_sequence(
         Labels.
     batch_size: int,
         Size of the batches.
-    seed: int,
-        Random seed to reproduce the generated sequences.
+    random_state: int,
+        Random random_state to reproduce the generated sequences.
 
     Returns
     ---------------------
@@ -31,11 +31,11 @@ def get_mlp_training_sequence(
         VectorSequence(
             X,
             batch_size=batch_size,
-            seed=seed
+            random_state=random_state
         ),
         VectorSequence(
             y.values,
             batch_size=batch_size,
-            seed=seed,
+            random_state=random_state,
         )
     )
