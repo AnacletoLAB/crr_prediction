@@ -53,11 +53,7 @@ def train_ray_model(
         verbose=False,
         callbacks=[
             # We report the training performance at the end of each epoch
-            TuneReportCallback(metrics=[
-                "{}{}".format(sub, metric)
-                for metric in model.metrics_names
-                for sub in ("", "val_")
-            ], ),
+            TuneReportCallback(),
             # We kill the process when the training reaches a plateau
             EarlyStopping(
                 monitor="loss",
