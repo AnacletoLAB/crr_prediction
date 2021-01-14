@@ -8,13 +8,13 @@ from tensorflow.keras.callbacks import EarlyStopping, TerminateOnNaN
 
 
 def train_ray_model(
+    config: Dict,
     train: MixedSequence,
     validation: MixedSequence,
     meta_model: MetaModel,
     max_epochs: int,
     patience: int,
     min_delta: float,
-    config: Dict,
     verbose: bool = False,
     enable_ray_callback: bool = True
 ):
@@ -22,6 +22,8 @@ def train_ray_model(
 
     Parameters
     ---------------------
+    config: Dict,
+        Selected hyper-parameters.
     train: MixedSequence,
         Training sequence.
     validation: MixedSequence,
@@ -34,8 +36,6 @@ def train_ray_model(
         Patience for early stopping.
     min_delta: float,
         Minimum delta for early stopping.
-    config: Dict,
-        Selected hyper-parameters.
     verbose: bool = False,
         Wether to show loading bars.
     enable_ray_callback: bool = True,
