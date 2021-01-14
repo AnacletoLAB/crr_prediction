@@ -21,14 +21,11 @@ def build_cnn_meta_model(window_size: int) -> CNN1DMetaModel:
             batch_normalization=False,
             max_kernel_size=10,
             min_kernel_size=2,
-            max_filters=128
+            max_filters=256
         ),
         top_ffnn_meta_model_kwargs=dict(
             meta_layer_kwargs=dict(
                 max_units=64,
-                activity_regularizer=True,
-                kernel_regularizer=True,
-                bias_regularizer=True,
                 batch_normalization=True,
                 dropout=True
             ),

@@ -17,10 +17,7 @@ def build_mlp_meta_model(features_number: int) -> FFNNMetaModel:
     return FFNNMetaModel(
         input_shape=(features_number,),
         meta_layer_kwargs=dict(
-            max_units=64,
-            activity_regularizer=True,
-            kernel_regularizer=True,
-            bias_regularizer=True,
+            max_units=256,
             batch_normalization=True,
             dropout=True
         ),
