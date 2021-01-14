@@ -14,7 +14,9 @@ def train_ray_model(
     max_epochs: int,
     patience: int,
     min_delta: float,
-    config: Dict
+    config: Dict,
+    verbose: bool = False,
+    enable_ray_callback: bool = True
 ):
     """Train the ray model.
 
@@ -34,6 +36,10 @@ def train_ray_model(
         Minimum delta for early stopping.
     config: Dict,
         Selected hyper-parameters.
+    verbose: bool = False,
+        Wether to show loading bars.
+    enable_ray_callback: bool = True,
+        Wether to enable the ray callback.
     """
     import silence_tensorflow.auto
     # Build the selected model from the meta model
@@ -50,10 +56,10 @@ def train_ray_model(
         train,
         validation_data=validation,
         epochs=max_epochs,
-        verbose=False,
+        verbose=verbose,
         callbacks=[
             # We report the training performance at the end of each epoch
-            TuneReportCallback(),
+            *((TuneReportCallback(),) if enable_ray_callback else ()),
             # We kill the process when the training reaches a plateau
             EarlyStopping(
                 monitor="loss",
