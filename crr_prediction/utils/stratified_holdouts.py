@@ -61,7 +61,7 @@ def stratified_holdouts(
                 sanitize_ml_labels(task_name)
             ),
             total=n_splits,
-            diable=not verbose,
+            disable=not verbose,
             leave=leave
         )
     )
