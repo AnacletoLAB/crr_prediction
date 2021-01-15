@@ -1,6 +1,7 @@
 """Module providing training method for meta models."""
-from typing import Dict
+from typing import Dict, Tuple
 import pandas as pd
+import numpy as np
 from keras_mixed_sequence import MixedSequence
 from meta_models.meta_models import MetaModel
 from extra_keras_metrics import get_standard_binary_metrics
@@ -11,17 +12,17 @@ from .utils import enable_subgpu_training
 
 def train_ray_model(
     config: Dict,
-    train: MixedSequence,
-    validation: MixedSequence,
+    train: Tuple[np.ndarray],
+    validation:  Tuple[np.ndarray],
     meta_model: MetaModel,
     max_epochs: int,
+    batch_size: int,
     patience: int,
     min_delta: float,
     verbose: bool = False,
     enable_ray_callback: bool = True,
-    subgpu_training: bool = False,
-    rasterize_sequence: bool = False
-):
+    subgpu_training: bool = False
+) -> pd.DataFrame:
     """Train the ray model.
 
     Parameters
@@ -36,6 +37,8 @@ def train_ray_model(
         MetaModel to fit.
     max_epochs: int,
         Maximum number of training epochs.
+    batch_size: int,
+        Batch size for the training process.
     patience: int,
         Patience for early stopping.
     min_delta: float,
@@ -46,8 +49,6 @@ def train_ray_model(
         Wether to enable the ray callback.
     subgpu_training: bool = False,
         Wether to enable subgpu training.
-    rasterize_sequence: bool = False,
-        Wether to rasterize training sequence.
 
     Returns
     ----------------------
@@ -65,14 +66,12 @@ def train_ray_model(
         # We add all the most common binary metrics
         metrics=get_standard_binary_metrics()
     )
-    if rasterize_sequence:
-        train = train.rasterize()
-        validation = validation.rasterize()
     # Fitting the model
     return pd.DataFrame(model.fit(
-        train,
+        *train,
         validation_data=validation,
         epochs=max_epochs,
+        batch_size=batch_size,
         verbose=verbose,
         callbacks=[
             # We report the training performance at the end of each epoch
