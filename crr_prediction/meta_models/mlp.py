@@ -19,6 +19,7 @@ def build_mlp_meta_model(features_number: int) -> FFNNMetaModel:
         meta_layer_kwargs=dict(
             max_units=256,
             batch_normalization=True,
-            dropout=True
+            dropout=True,
+            residual=True
         ),
     )
