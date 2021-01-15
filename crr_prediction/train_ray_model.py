@@ -21,7 +21,8 @@ def train_ray_model(
     min_delta: float,
     verbose: bool = False,
     enable_ray_callback: bool = True,
-    subgpu_training: bool = False
+    subgpu_training: bool = False,
+    return_training_history: bool = False
 ) -> pd.DataFrame:
     """Train the ray model.
 
@@ -49,6 +50,8 @@ def train_ray_model(
         Wether to enable the ray callback.
     subgpu_training: bool = False,
         Wether to enable subgpu training.
+    return_training_history: bool = False,
+        Wether to return the training history.
 
     Returns
     ----------------------
@@ -67,7 +70,7 @@ def train_ray_model(
         metrics=get_standard_binary_metrics()
     )
     # Fitting the model
-    return pd.DataFrame(model.fit(
+    history = pd.DataFrame(model.fit(
         *train,
         validation_data=validation,
         epochs=max_epochs,
@@ -81,11 +84,12 @@ def train_ray_model(
             EarlyStopping(
                 monitor="loss",
                 min_delta=min_delta,
-                patience=patience,
-                restore_best_weights=True
+                patience=patience
             ),
             # And if something very wrong happens and a NaN appears,
             # we terminate the execution.
             TerminateOnNaN()
         ]
     ).history)
+    if return_training_history:
+        return history
