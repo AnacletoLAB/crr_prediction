@@ -73,6 +73,7 @@ def train_ray_model(
         epochs=max_epochs,
         batch_size=batch_size,
         verbose=verbose,
+        shuffle=True,
         callbacks=[
             # We report the training performance at the end of each epoch
             *((TuneReportCallback(),) if enable_ray_callback else ()),
