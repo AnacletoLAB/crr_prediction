@@ -6,6 +6,7 @@ from meta_models.meta_models import MetaModel
 from extra_keras_metrics import get_standard_binary_metrics
 from ray.tune.integration.keras import TuneReportCallback
 from tensorflow.keras.callbacks import EarlyStopping, TerminateOnNaN
+from .utils import enable_subgpu_training
 
 
 def train_ray_model(
@@ -17,7 +18,9 @@ def train_ray_model(
     patience: int,
     min_delta: float,
     verbose: bool = False,
-    enable_ray_callback: bool = True
+    enable_ray_callback: bool = True,
+    subgpu_training: bool = False,
+    rasterize_sequence: bool = False
 ):
     """Train the ray model.
 
@@ -41,8 +44,18 @@ def train_ray_model(
         Wether to show loading bars.
     enable_ray_callback: bool = True,
         Wether to enable the ray callback.
+    subgpu_training: bool = False,
+        Wether to enable subgpu training.
+    rasterize_sequence: bool = False,
+        Wether to rasterize training sequence.
+
+    Returns
+    ----------------------
+    Dataframe containing training history.
     """
     import silence_tensorflow.auto
+    if subgpu_training:
+        enable_subgpu_training()
     # Build the selected model from the meta model
     model = meta_model.build(**config)
     # Compile it
@@ -52,6 +65,9 @@ def train_ray_model(
         # We add all the most common binary metrics
         metrics=get_standard_binary_metrics()
     )
+    if rasterize_sequence:
+        train = train.rasterize()
+        validation = validation.rasterize()
     # Fitting the model
     return pd.DataFrame(model.fit(
         train,
@@ -65,7 +81,8 @@ def train_ray_model(
             EarlyStopping(
                 monitor="loss",
                 min_delta=min_delta,
-                patience=patience
+                patience=patience,
+                restore_best_weights=True
             ),
             # And if something very wrong happens and a NaN appears,
             # we terminate the execution.
