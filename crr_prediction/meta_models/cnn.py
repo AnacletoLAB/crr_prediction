@@ -28,7 +28,7 @@ def build_cnn_meta_model(window_size: int) -> CNN1DMetaModel:
         top_ffnn_meta_model_kwargs=dict(
             blocks=2,
             meta_layer_kwargs=dict(
-                max_units=128,
+                max_units=64,
                 batch_normalization=True,
                 residual=True,
                 dropout=True,
