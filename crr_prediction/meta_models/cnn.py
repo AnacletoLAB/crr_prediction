@@ -1,8 +1,8 @@
 """Module providing meta-cnn model."""
-from meta_models.meta_models import CNN1DMetaModel
+from meta_models.meta_models import CNN2DMetaModel
 
 
-def build_cnn_meta_model(window_size: int) -> CNN1DMetaModel:
+def build_cnn_meta_model(window_size: int) -> CNN2DMetaModel:
     """Return CNN meta model.
 
     Parameters
@@ -14,7 +14,7 @@ def build_cnn_meta_model(window_size: int) -> CNN1DMetaModel:
     -------------------------
     CNN1D model.
     """
-    return CNN1DMetaModel(
+    return CNN2DMetaModel(
         blocks=2,
         input_shape=(window_size, 4),
         meta_layer_kwargs=dict(
