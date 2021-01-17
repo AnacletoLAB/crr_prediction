@@ -2,7 +2,7 @@
 from typing import Tuple, Dict
 import pandas as pd
 from keras_mixed_sequence import MixedSequence
-from .build_cnn_sequences import get_cnn_training_sequence
+from .cnn_sequence import get_cnn_training_sequence
 from ucsc_genomes_downloader import Genome
 
 
