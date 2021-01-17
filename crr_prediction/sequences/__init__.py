@@ -1,8 +1,8 @@
 """Module providing training sequences."""
-from .cnn_sequence import get_cnn_training_sequence
-from .mlp_sequence import get_mlp_training_sequence
+from .build_cnn_sequences import build_cnn_sequences
+from .build_mlp_sequences import build_mlp_sequences
 
 __all__ = [
-    "get_cnn_training_sequence",
-    "get_mlp_training_sequence"
+    "build_cnn_sequences",
+    "build_mlp_sequences"
 ]

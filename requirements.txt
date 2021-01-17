@@ -8,3 +8,4 @@ keras_mixed_sequence
 meta_models
 tqdm
 sklearn
+cache_decorator[all]
