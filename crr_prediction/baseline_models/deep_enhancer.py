@@ -18,14 +18,14 @@ def deep_enhancers(
     model = Sequential([
         Input((window_size, 4)),
         Reshape((window_size, 4, 1)),
-        Conv2D(filters=128, kernel_size=8, activation="relu"),
+        Conv2D(filters=128, kernel_size=(8, 1), activation="relu"),
         BatchNormalization(),
-        Conv2D(filters=128, kernel_size=8, activation="relu"),
+        Conv2D(filters=128, kernel_size=(8, 1), activation="relu"),
         BatchNormalization(),
         MaxPool2D(pool_size=(2, 1)),
-        Conv2D(filters=64, kernel_size=3, activation="relu"),
+        Conv2D(filters=64, kernel_size=(3, 1), activation="relu"),
         BatchNormalization(),
-        Conv2D(filters=64, kernel_size=3, activation="relu"),
+        Conv2D(filters=64, kernel_size=(3, 1), activation="relu"),
         BatchNormalization(),
         MaxPool2D(pool_size=(2, 1)),
         Flatten(),
@@ -42,5 +42,5 @@ def deep_enhancers(
         # We add all the most common binary metrics
         metrics=get_standard_binary_metrics()
     )
-    
+
     return model
