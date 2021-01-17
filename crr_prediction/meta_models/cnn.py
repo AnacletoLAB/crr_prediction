@@ -15,7 +15,7 @@ def build_cnn_meta_model(window_size: int) -> CNN2DMetaModel:
     CNN1D model.
     """
     return CNN2DMetaModel(
-        blocks=2,
+        blocks=3,
         input_shape=(window_size, 4),
         target_shape=(window_size, 4, 1),
         meta_layer_kwargs=dict(
@@ -31,7 +31,7 @@ def build_cnn_meta_model(window_size: int) -> CNN2DMetaModel:
             bias_regularizer=True,
         ),
         top_ffnn_meta_model_kwargs=dict(
-            blocks=2,
+            blocks=3,
             meta_layer_kwargs=dict(
                 max_units=64,
                 batch_normalization=True,
