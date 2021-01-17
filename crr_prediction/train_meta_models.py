@@ -1,5 +1,6 @@
 """Method to train the meta models on all cell lines."""
 from typing import Dict, Callable, Tuple
+import os
 import silence_tensorflow.auto
 import pandas as pd
 from tqdm.auto import tqdm
@@ -77,6 +78,7 @@ def train(
         verbose=False
     )
 
+    os.makedirs(f"results/tuning_analyses/{task}/{cell_line}", exist_ok=True)
     tuning_analysis.to_csv(
         f"results/tuning_analyses/{task}/{cell_line}/{holdout_number}.csv",
         index=False
@@ -84,6 +86,7 @@ def train(
 
     history = tuner.fit(train=train.rasterize(verbose=False))
 
+    os.makedirs(f"results/training_histories/{task}/{cell_line}", exist_ok=True)
     history.to_csv(
         f"results/training_histories/{task}/{cell_line}/{holdout_number}.csv",
         index=False
