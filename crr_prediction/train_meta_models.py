@@ -145,7 +145,7 @@ def train_meta_models(
     if total_threads is None:
         total_threads = cpu_count()
     all_performance = []
-    for cell_line in tqdm(get_cell_lines(), total="Cell lines"):
+    for cell_line in tqdm(get_cell_lines(), desc="Cell lines"):
         for (X, y), task in load_all_tasks(
             cell_line=cell_line,
             window_size=window_size,
