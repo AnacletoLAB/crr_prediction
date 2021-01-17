@@ -2,7 +2,7 @@ ray[tune]
 pandas
 numpy
 ucsc_genomes_downloader
-epigenomic_dataset
+epigenomic_dataset>=1.2.5
 keras_bed_sequence
 keras_mixed_sequence
 meta_models
