@@ -20,9 +20,15 @@ def build_cnn_meta_model(window_size: int) -> CNN2DMetaModel:
         target_shape=(window_size, 4, 1),
         meta_layer_kwargs=dict(
             batch_normalization=False,
-            dropout=True,
+            dropout=False,
             residual=True,
-            max_filters=128
+            max_filters=128,
+            min_x_strides=2,
+            l1_regularization=1e-4,
+            l2_regularization=1e-4,
+            activity_regularizer=True,
+            kernel_regularizer=True,
+            bias_regularizer=True,
         ),
         top_ffnn_meta_model_kwargs=dict(
             blocks=2,
