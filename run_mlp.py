@@ -10,5 +10,6 @@ if __name__ == "__main__":
     ray.init()
     train_meta_models(
         build_mlp_sequences,
-        build_mlp_meta_model
+        build_mlp_meta_model,
+        total_threads=20
     ).to_csv("mlp.csv", index=False)

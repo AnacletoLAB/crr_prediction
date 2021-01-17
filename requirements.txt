@@ -9,3 +9,4 @@ meta_models
 tqdm
 sklearn
 cache_decorator[all]
+extra_keras_metrics
