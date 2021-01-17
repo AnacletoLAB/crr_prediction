@@ -1,6 +1,6 @@
 """Model implementing Deep Enhancer."""
 from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Input, Reshape, Dense, Conv1D, BatchNormalization, MaxPool1D, Dropout, Flatten
+from tensorflow.keras.layers import Input, Reshape, Dense, Conv2D, BatchNormalization, MaxPool2D, Dropout, Flatten
 from extra_keras_metrics import get_standard_binary_metrics
 
 __all__ = ["deep_enhancers"]
@@ -18,16 +18,16 @@ def deep_enhancers(
     model = Sequential([
         Input((window_size, 4)),
         Reshape((window_size, 4, 1)),
-        Conv1D(filters=128, kernel_size=8, activation="relu"),
+        Conv2D(filters=128, kernel_size=8, activation="relu"),
         BatchNormalization(),
-        Conv1D(filters=128, kernel_size=8, activation="relu"),
+        Conv2D(filters=128, kernel_size=8, activation="relu"),
         BatchNormalization(),
-        MaxPool1D(pool_size=2),
-        Conv1D(filters=64, kernel_size=3, activation="relu"),
+        MaxPool2D(pool_size=2),
+        Conv2D(filters=64, kernel_size=3, activation="relu"),
         BatchNormalization(),
-        Conv1D(filters=64, kernel_size=3, activation="relu"),
+        Conv2D(filters=64, kernel_size=3, activation="relu"),
         BatchNormalization(),
-        MaxPool1D(pool_size=2),
+        MaxPool2D(pool_size=2),
         Flatten(),
         Dense(units=256, activation="relu"),
         Dropout(rate=0.1),
@@ -35,10 +35,12 @@ def deep_enhancers(
         Dropout(rate=0.1),
         Dense(units=1, activation="sigmoid"),
     ], name="DeepEnhancer")
+
     model.compile(
         optimizer="nadam",
         loss="binary_crossentropy",
         # We add all the most common binary metrics
         metrics=get_standard_binary_metrics()
     )
+    
     return model
