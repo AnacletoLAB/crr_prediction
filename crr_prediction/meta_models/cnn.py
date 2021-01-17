@@ -21,8 +21,6 @@ def build_cnn_meta_model(window_size: int) -> CNN2DMetaModel:
             batch_normalization=False,
             dropout=True,
             residual=True,
-            max_kernel_size=8,
-            min_kernel_size=2,
             max_filters=128
         ),
         top_ffnn_meta_model_kwargs=dict(
