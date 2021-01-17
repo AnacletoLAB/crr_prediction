@@ -19,8 +19,8 @@ def build_cnn_meta_model(window_size: int) -> CNN2DMetaModel:
         input_shape=(window_size, 4),
         target_shape=(window_size, 4, 1),
         meta_layer_kwargs=dict(
-            batch_normalization=False,
-            dropout=False,
+            batch_normalization=True,
+            dropout=True,
             residual=True,
             max_filters=128,
             min_x_strides=2,
