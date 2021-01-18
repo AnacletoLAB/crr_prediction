@@ -133,7 +133,7 @@ def train_meta_models(
     build_sequences: Callable,
     build_meta_model: Callable,
     window_size: int = 256,
-    n_splits: int = 10,
+    n_splits: int = 3,
     random_state: int = 42,
     test_size: float = 0.2,
     valid_size: float = 0.2,
