@@ -16,7 +16,7 @@ from cache_decorator import Cache
 
 
 @Cache(
-    cache_path="results/{model}/performance/{task}/{cell_line}/{holdout_number}_{_hash}.csv",
+    cache_path="results/{model}/performance/{task}/{cell_line}/{holdout_number}_{_hash}.csv.gz",
     args_to_ignore=[
         "train_x", "test_x", "train_y", "test_y",
         "build_sequences", "build_meta_model", "genome"
@@ -81,7 +81,7 @@ def train(
 
     os.makedirs(f"results/tuning_analyses/{task}/{cell_line}", exist_ok=True)
     tuning_analysis.to_csv(
-        f"results/tuning_analyses/{task}/{cell_line}/{holdout_number}.csv",
+        f"results/tuning_analyses/{task}/{cell_line}/{holdout_number}.csv.gz",
         index=False
     )
 
@@ -90,7 +90,7 @@ def train(
     os.makedirs(
         f"results/training_histories/{task}/{cell_line}", exist_ok=True)
     history.to_csv(
-        f"results/training_histories/{task}/{cell_line}/{holdout_number}.csv",
+        f"results/training_histories/{task}/{cell_line}/{holdout_number}.csv.gz",
         index=False
     )
 
