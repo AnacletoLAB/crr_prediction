@@ -11,5 +11,4 @@ if __name__ == "__main__":
     train_meta_models(
         build_mlp_sequences,
         build_mlp_meta_model,
-        total_threads=20
     ).to_csv("mlp.csv", index=False)

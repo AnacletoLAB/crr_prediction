@@ -10,7 +10,7 @@ from crr_prediction.baseline_models import deep_enhancers
 from crr_prediction.meta_models import build_cnn_meta_model, build_mlp_meta_model
 from ucsc_genomes_downloader import Genome
 from meta_models.tuner import RayHyperOptTuner
-from meta_models.utils import stratified_holdouts, get_minimum_gpu_rate_per_trial
+from meta_models.utils import stratified_holdouts, get_minimum_gpu_rate_per_trial, enable_subgpu_training
 from multiprocessing import cpu_count
 from cache_decorator import Cache
 
@@ -86,7 +86,8 @@ def train(
 
     history = tuner.fit(train=train.rasterize(verbose=False))
 
-    os.makedirs(f"results/training_histories/{task}/{cell_line}", exist_ok=True)
+    os.makedirs(
+        f"results/training_histories/{task}/{cell_line}", exist_ok=True)
     history.to_csv(
         f"results/training_histories/{task}/{cell_line}/{holdout_number}.csv",
         index=False
@@ -146,6 +147,7 @@ def train_meta_models(
     """Run full suite of experiments on the given metamodel."""
     if total_threads is None:
         total_threads = cpu_count()
+    enable_subgpu_training()
     all_performance = []
     for cell_line in tqdm(get_cell_lines(), desc="Cell lines"):
         for (X, y), task in load_all_tasks(
@@ -175,4 +177,4 @@ def train_meta_models(
                     total_threads=total_threads,
                     genome=genome
                 ))
-    return pd.DataFrame(all_performance)
+    return pd.concat(all_performance)
