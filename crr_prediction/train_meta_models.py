@@ -16,7 +16,7 @@ from cache_decorator import Cache
 
 
 @Cache(
-    cache_path="results/performance/{task}/{cell_line}/{holdout_number}_{_hash}.csv",
+    cache_path="results/{model}/performance/{task}/{cell_line}/{holdout_number}_{_hash}.csv",
     args_to_ignore=[
         "train_x", "test_x", "train_y", "test_y",
         "build_sequences", "build_meta_model", "genome"
@@ -29,6 +29,7 @@ def train(
     test_y: pd.DataFrame,
     build_sequences: Callable,
     build_meta_model: Callable,
+    model: str,
     task: str,
     cell_line: str,
     holdout_number: int,
@@ -132,6 +133,7 @@ def train(
 def train_meta_models(
     build_sequences: Callable,
     build_meta_model: Callable,
+    model: str,
     window_size: int = 256,
     n_splits: int = 3,
     random_state: int = 42,
@@ -165,6 +167,7 @@ def train_meta_models(
                 all_performance.append(train(
                     train_x, test_x, train_y, test_y,
                     build_sequences, build_meta_model,
+                    model=model,
                     task=task,
                     cell_line=cell_line,
                     holdout_number=holdout_number,

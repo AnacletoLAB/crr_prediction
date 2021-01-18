@@ -11,4 +11,5 @@ if __name__ == "__main__":
     train_meta_models(
         build_mlp_sequences,
         build_mlp_meta_model,
+        model="MLP"
     ).to_csv("mlp.csv", index=False)
