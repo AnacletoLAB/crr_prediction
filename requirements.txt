@@ -10,3 +10,4 @@ tqdm
 sklearn
 cache_decorator[all]
 extra_keras_metrics
+barplots
