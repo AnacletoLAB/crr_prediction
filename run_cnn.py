@@ -13,6 +13,6 @@ if __name__ == "__main__":
         build_cnn_sequences,
         build_cnn_meta_model,
         model="CNN",
-        total_threads=16,
+        total_threads=20,
         genome=Genome("hg38")
     ).to_csv("cnn.csv", index=False)
