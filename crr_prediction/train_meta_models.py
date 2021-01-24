@@ -177,7 +177,7 @@ def train_meta_models(
     build_meta_model: Callable,
     model: str,
     window_size: int = 256,
-    n_splits: int = 3,
+    n_splits: int = 10,
     random_state: int = 42,
     test_size: float = 0.2,
     valid_size: float = 0.2,
@@ -200,7 +200,7 @@ def train_meta_models(
         Name of the meta model.
     window_size: int = 256,
         Window size.
-    n_splits: int = 3,
+    n_splits: int = 10,
         Number of random holdouts
     holdout_number: int,
         Number of the holdout to compute.
