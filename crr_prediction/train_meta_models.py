@@ -44,7 +44,48 @@ def train(
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Return tuple with all details of the training and tuning process.
 
+    Parameters
+    ---------------------
+    train_x: pd.DataFrame,
+        Training input dataframe.
+    test_x: pd.DataFrame,
+        Test input dataframe.
+    train_y: pd.DataFrame,
+        Train output dataframe.
+    test_y: pd.DataFrame,
+        Test output dataframe.
+    build_sequences: Callable,
+        Method to use to generate the training sequences.
+    build_meta_model: Callable,
+        Method to build the meta model.
+    model: str,
+        Name of the meta model.
+    task: str,
+        Name of the task.
+    cell_line: str,
+        Name of the cell line.
+    holdout_number: int,
+        Number of the holdout to compute.
+    random_state: int = 42,
+        Random state to reproduce holdout.
+    valid_size: float = 0.2,
+        Size for the validation data.
+    batch_size: int = 256,
+        Batch size for the sequences.
+    num_samples: int = 200,
+        Number of samples for the optimization.
+    random_search_steps: int = 100,
+        Number of initial random sampled points.
+    resolution: int = 10,
+        Resolution for the range of hyper-parameters.
+    total_threads: int = None,
+        Number of threads to use.
+    genome: Genome = None,
+        Genome to use for the bed sequences.
 
+    Returns
+    ---------------------
+    Dataframe with model performance.
     """
     subtrain_x, valid_x, subtrain_y, valid_y = stratified_holdouts(
         random_state=random_state,
@@ -79,18 +120,19 @@ def train(
         verbose=False
     )
 
-    os.makedirs(f"results/tuning_analyses/{task}/{cell_line}", exist_ok=True)
+    os.makedirs(
+        f"results/{model}/tuning_analyses/{task}/{cell_line}", exist_ok=True)
     tuning_analysis.to_csv(
-        f"results/tuning_analyses/{task}/{cell_line}/{holdout_number}.csv.gz",
+        f"results/{model}/tuning_analyses/{task}/{cell_line}/{holdout_number}.csv.gz",
         index=False
     )
 
     history = tuner.fit(train=train.rasterize(verbose=False))
 
     os.makedirs(
-        f"results/training_histories/{task}/{cell_line}", exist_ok=True)
+        f"results/{model}/training_histories/{task}/{cell_line}", exist_ok=True)
     history.to_csv(
-        f"results/training_histories/{task}/{cell_line}/{holdout_number}.csv.gz",
+        f"results/{model}/training_histories/{task}/{cell_line}/{holdout_number}.csv.gz",
         index=False
     )
 
@@ -146,7 +188,45 @@ def train_meta_models(
     total_threads: int = None,
     genome: Genome = None
 ) -> pd.DataFrame:
-    """Run full suite of experiments on the given metamodel."""
+    """Run full suite of experiments on the given metamodel.
+
+    Parameters
+    -------------------
+    build_sequences: Callable,
+        Method to use to generate the training sequences.
+    build_meta_model: Callable,
+        Method to build the meta model.
+    model: str,
+        Name of the meta model.
+    window_size: int = 256,
+        Window size.
+    n_splits: int = 3,
+        Number of random holdouts
+    holdout_number: int,
+        Number of the holdout to compute.
+    random_state: int = 42,
+        Random state to reproduce holdout.
+    test_size: float = 0.2,
+        Size for the test data.
+    valid_size: float = 0.2,
+        Size for the validation data.
+    batch_size: int = 256,
+        Batch size for the sequences.
+    num_samples: int = 200,
+        Number of samples for the optimization.
+    random_search_steps: int = 100,
+        Number of initial random sampled points.
+    resolution: int = 10,
+        Resolution for the range of hyper-parameters.
+    total_threads: int = None,
+        Number of threads to use.
+    genome: Genome = None,
+        Genome to use for the bed sequences.
+
+    Returns
+    -------------------
+    DataFrame with all performance.
+    """
     if total_threads is None:
         total_threads = cpu_count()
     enable_subgpu_training()
