@@ -16,7 +16,7 @@ from cache_decorator import Cache
 
 
 @Cache(
-    cache_path="results/{model}/performance/{task}/{cell_line}/{holdout_number}_{_hash}.csv.gz",
+    cache_path="results/{model}/performance/{task}/{cell_line}/{holdout_number}.csv.gz",
     args_to_ignore=[
         "train_x", "test_x", "train_y", "test_y",
         "build_sequences", "build_meta_model", "genome", "total_threads"
