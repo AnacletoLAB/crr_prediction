@@ -14,5 +14,6 @@ if __name__ == "__main__":
         build_cnn_meta_model,
         model="CNN",
         total_threads=8,
+        n_splits=20,
         genome=Genome("hg38")
     ).to_csv("cnn.csv", index=False)
