@@ -117,7 +117,8 @@ def train(
         num_samples=num_samples,
         random_search_steps=random_search_steps,
         total_threads=total_threads,
-        verbose=False
+        verbose=False,
+        fail_fast=False
     )
 
     os.makedirs(
