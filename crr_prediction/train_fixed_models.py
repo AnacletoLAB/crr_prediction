@@ -198,6 +198,7 @@ def train_cell_line(
     sleep(sleep_time)
     genome = Genome(genome_assembly)
     import setGPU
+    enable_subgpu_training()
     all_performance = []
     for (X, y), task in load_all_tasks(
         cell_line=cell_line,
