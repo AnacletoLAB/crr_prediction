@@ -12,5 +12,5 @@ if __name__ == "__main__":
         fixed_cnn,
         model="FixedCNN",
         n_splits=10,
-        genome=Genome("hg38")
+        genome="hg38"
     ).to_csv("fixed_cnn.csv", index=False)
