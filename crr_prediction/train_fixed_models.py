@@ -99,7 +99,7 @@ def train(
 
     model: Model = build_fixed_model(train[0][0].shape[1])
 
-    history = model.fit(
+    history = pd.DataFrame(model.fit(
         *train.rasterize(verbose=False),
         validation_data=test.rasterize(verbose=False),
         batch_size=batch_size,
@@ -112,7 +112,7 @@ def train(
             patience=5,
             restore_best_weights=True
         )]
-    )
+    ).history)
 
     os.makedirs(
         f"results/{model}/training_histories/{task}/{cell_line}", exist_ok=True)
