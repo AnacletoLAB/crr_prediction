@@ -194,7 +194,6 @@ def train_fixed_models(
     -------------------
     DataFrame with all performance.
     """
-    enable_subgpu_training()
     import setGPU
     all_performance = []
     for cell_line in get_cell_lines():
