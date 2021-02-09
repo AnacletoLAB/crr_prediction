@@ -160,7 +160,7 @@ def train_cell_line(
     random_state: int = 42,
     test_size: float = 0.2,
     batch_size: int = 256,
-    genome: Genome = None,
+    genome_assembly: str = None,
 ) -> List:
     """Run full suite of experiments on the given metamodel.
 
@@ -188,7 +188,7 @@ def train_cell_line(
         Size for the test data.
     batch_size: int = 256,
         Batch size for the sequences.
-    genome: Genome = None,
+    genome_assembly: str = None,
         Genome to use for the bed sequences.
 
     Returns
@@ -196,6 +196,7 @@ def train_cell_line(
     DataFrame with all performance.
     """
     sleep(sleep_time)
+    genome = Genome(genome_assembly)
     import setGPU
     all_performance = []
     for (X, y), task in load_all_tasks(
@@ -237,7 +238,7 @@ def train_fixed_models(
     random_state: int = 42,
     test_size: float = 0.2,
     batch_size: int = 256,
-    genome: Genome = None
+    genome_assembly: str = None
 ) -> pd.DataFrame:
     """Run full suite of experiments on the given metamodel.
 
@@ -261,7 +262,7 @@ def train_fixed_models(
         Size for the test data.
     batch_size: int = 256,
         Batch size for the sequences.
-    genome: Genome = None,
+    genome_assembly: str = None,
         Genome to use for the bed sequences.
 
     Returns
@@ -286,7 +287,7 @@ def train_fixed_models(
                             n_splits=n_splits,
                             random_state=random_state,
                             test_size=test_size,
-                            genome=genome
+                            genome_assembly=genome_assembly
                         )
                         for i, cell_line in enumerate(get_cell_lines())
                     )
