@@ -269,6 +269,7 @@ def train_fixed_models(
     -------------------
     DataFrame with all performance.
     """
+    enable_subgpu_training()
     threads_number = min(get_gpu_number(), len(get_cell_lines()))
     with Pool(threads_number) as p:
         all_performance = [
@@ -282,7 +283,7 @@ def train_fixed_models(
                             build_fixed_model=build_fixed_model,
                             model=model,
                             cell_line=cell_line,
-                            sleep_time=i*20,
+                            sleep_time=i*50,
                             window_size=window_size,
                             n_splits=n_splits,
                             random_state=random_state,
