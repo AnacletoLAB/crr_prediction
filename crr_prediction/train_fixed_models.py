@@ -191,6 +191,7 @@ def train_cell_line(
     -------------------
     DataFrame with all performance.
     """
+    import setGPU
     all_performance = []
     for (X, y), task in load_all_tasks(
         cell_line=cell_line,
