@@ -105,13 +105,13 @@ def train(
         batch_size=batch_size,
         epochs=100,
         verbose=False,
-        callbacks=EarlyStopping(
+        callbacks=[EarlyStopping(
             monitor="AUPRC",
             mode="max",
             min_delta=0.001,
             patience=5,
             restore_best_weights=True
-        )
+        )]
     )
 
     os.makedirs(
