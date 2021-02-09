@@ -286,6 +286,7 @@ def train_fixed_models(
                             n_splits=n_splits,
                             random_state=random_state,
                             test_size=test_size,
+                            genome=genome
                         )
                         for i, cell_line in enumerate(get_cell_lines())
                     )
