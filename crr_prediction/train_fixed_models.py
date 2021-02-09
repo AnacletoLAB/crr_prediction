@@ -103,6 +103,13 @@ def train(
         validation_data=test.rasterize(verbose=False),
         batch_size=batch_size,
         epochs=100,
+        callbacks=EarlyStopping(
+            monitor="AUPRC",
+            mode="max",
+            min_delta=0.001,
+            patience=5,
+            restore_best_weights=True
+        )
     )
 
     os.makedirs(
