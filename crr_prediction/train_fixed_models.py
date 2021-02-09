@@ -16,6 +16,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 from multiprocessing import cpu_count
 from cache_decorator import Cache
 from multiprocessing import Pool
+from time import sleep
 
 
 @Cache(
@@ -153,12 +154,13 @@ def train_cell_line(
     build_fixed_model: Callable,
     model: str,
     cell_line: str,
+    sleep_time: int,
     window_size: int = 256,
     n_splits: int = 10,
     random_state: int = 42,
     test_size: float = 0.2,
     batch_size: int = 256,
-    genome: Genome = None
+    genome: Genome = None,
 ) -> List:
     """Run full suite of experiments on the given metamodel.
 
@@ -172,6 +174,8 @@ def train_cell_line(
         Name of the meta model.
     cell_line: str,
         Cell line.
+    sleep_time: int,
+        Sleep time.
     window_size: int = 256,
         Window size.
     n_splits: int = 10,
@@ -191,6 +195,7 @@ def train_cell_line(
     -------------------
     DataFrame with all performance.
     """
+    sleep(sleep_time)
     import setGPU
     all_performance = []
     for (X, y), task in load_all_tasks(
@@ -276,12 +281,13 @@ def train_fixed_models(
                             build_fixed_model=build_fixed_model,
                             model=model,
                             cell_line=cell_line,
+                            sleep_time=i*10,
                             window_size=window_size,
                             n_splits=n_splits,
                             random_state=random_state,
-                            test_size=test_size
+                            test_size=test_size,
                         )
-                        for cell_line in get_cell_lines()
+                        for i, cell_line in enumerate(get_cell_lines())
                     )
                 ),
                 desc="Parsing cell lines",
@@ -289,5 +295,4 @@ def train_fixed_models(
             )
             for perf in perfs
         ]
-
     return pd.concat(all_performance)
