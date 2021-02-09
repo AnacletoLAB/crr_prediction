@@ -284,7 +284,7 @@ def train_fixed_models(
                             build_fixed_model=build_fixed_model,
                             model=model,
                             cell_line=cell_line,
-                            sleep_time=i*50,
+                            sleep_time=i*60,
                             window_size=window_size,
                             n_splits=n_splits,
                             random_state=random_state,
