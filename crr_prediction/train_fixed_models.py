@@ -104,6 +104,7 @@ def train(
         validation_data=test.rasterize(verbose=False),
         batch_size=batch_size,
         epochs=100,
+        verbose=False,
         callbacks=EarlyStopping(
             monitor="AUPRC",
             mode="max",
