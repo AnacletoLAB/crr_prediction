@@ -12,6 +12,7 @@ from ucsc_genomes_downloader import Genome
 from meta_models.tuner import RayHyperOptTuner
 from meta_models.utils import stratified_holdouts, get_minimum_gpu_rate_per_trial, enable_subgpu_training
 from tensorflow.keras.models import Model
+from tensorflow.keras.callbacks import EarlyStopping
 from multiprocessing import cpu_count
 from cache_decorator import Cache
 
