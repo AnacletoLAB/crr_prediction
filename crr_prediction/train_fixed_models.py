@@ -121,8 +121,14 @@ def train(
         index=False
     )
 
-    train_performance = model.evaluate(train, verbose=False)
-    test_performance = model.evaluate(test, verbose=False)
+    train_performance = dict(zip(
+        model.metrics_names,
+        model.evaluate(train, verbose=False)
+    ))
+    test_performance = dict(zip(
+        model.metrics_names,
+        model.evaluate(test, verbose=False)
+    ))
 
     metadata = {
         "task": task,
