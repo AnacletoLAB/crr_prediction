@@ -154,7 +154,6 @@ def train_cell_line(
     build_fixed_model: Callable,
     model: str,
     cell_line: str,
-    sleep_time: int,
     window_size: int = 256,
     n_splits: int = 10,
     random_state: int = 42,
@@ -174,8 +173,6 @@ def train_cell_line(
         Name of the meta model.
     cell_line: str,
         Cell line.
-    sleep_time: int,
-        Sleep time.
     window_size: int = 256,
         Window size.
     n_splits: int = 10,
@@ -195,9 +192,7 @@ def train_cell_line(
     -------------------
     DataFrame with all performance.
     """
-    sleep(sleep_time)
     genome = Genome(genome_assembly)
-    import setGPU
     enable_subgpu_training()
     all_performance = []
     for (X, y), task in load_all_tasks(
@@ -212,6 +207,7 @@ def train_cell_line(
             y=y,
             task_name=task
         ):
+            import setGPU
             all_performance.append(train(
                 train_x, test_x, train_y, test_y,
                 build_sequences, build_fixed_model,
@@ -271,7 +267,7 @@ def train_fixed_models(
     DataFrame with all performance.
     """
     enable_subgpu_training()
-    threads_number = min(get_gpu_number(), len(get_cell_lines()))
+    threads_number = len(get_cell_lines())
     with Pool(threads_number) as p:
         all_performance = [
             perf
@@ -284,7 +280,6 @@ def train_fixed_models(
                             build_fixed_model=build_fixed_model,
                             model=model,
                             cell_line=cell_line,
-                            sleep_time=i*60,
                             window_size=window_size,
                             n_splits=n_splits,
                             random_state=random_state,
