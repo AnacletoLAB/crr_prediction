@@ -1,5 +1,5 @@
 """Method to train the meta models on all cell lines."""
-from typing import Dict, Callable, Tuple
+from typing import Dict, Callable, Tuple, List
 import os
 import silence_tensorflow.auto
 import pandas as pd
@@ -10,11 +10,12 @@ from crr_prediction.baseline_models import deep_enhancers
 from crr_prediction.meta_models import build_cnn_meta_model, build_mlp_meta_model
 from ucsc_genomes_downloader import Genome
 from meta_models.tuner import RayHyperOptTuner
-from meta_models.utils import stratified_holdouts, get_minimum_gpu_rate_per_trial, enable_subgpu_training
+from meta_models.utils import stratified_holdouts, get_minimum_gpu_rate_per_trial, enable_subgpu_training, get_gpu_number
 from tensorflow.keras.models import Model
 from tensorflow.keras.callbacks import EarlyStopping
 from multiprocessing import cpu_count
 from cache_decorator import Cache
+from multiprocessing import Pool
 
 
 @Cache(
@@ -36,7 +37,6 @@ def train(
     cell_line: str,
     holdout_number: int,
     random_state: int = 42,
-    valid_size: float = 0.2,
     batch_size: int = 256,
     genome: Genome = None
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -66,8 +66,6 @@ def train(
         Number of the holdout to compute.
     random_state: int = 42,
         Random state to reproduce holdout.
-    valid_size: float = 0.2,
-        Size for the validation data.
     batch_size: int = 256,
         Batch size for the sequences.
     genome: Genome = None,
@@ -79,7 +77,7 @@ def train(
     """
     subtrain_x, valid_x, subtrain_y, valid_y = stratified_holdouts(
         random_state=random_state,
-        train_size=1-valid_size,
+        train_size=0.8,
         X=train_x,
         y=train_y
     )
@@ -150,6 +148,80 @@ def train(
     ])
 
 
+def train_cell_line(
+    build_sequences: Callable,
+    build_fixed_model: Callable,
+    model: str,
+    cell_line: str,
+    window_size: int = 256,
+    n_splits: int = 10,
+    random_state: int = 42,
+    test_size: float = 0.2,
+    batch_size: int = 256,
+    genome: Genome = None
+) -> List:
+    """Run full suite of experiments on the given metamodel.
+
+    Parameters
+    -------------------
+    build_sequences: Callable,
+        Method to use to generate the training sequences.
+    build_fixed_model: Callable,
+        Method to build the meta model.
+    model: str,
+        Name of the meta model.
+    cell_line: str,
+        Cell line.
+    window_size: int = 256,
+        Window size.
+    n_splits: int = 10,
+        Number of random holdouts
+    holdout_number: int,
+        Number of the holdout to compute.
+    random_state: int = 42,
+        Random state to reproduce holdout.
+    test_size: float = 0.2,
+        Size for the test data.
+    batch_size: int = 256,
+        Batch size for the sequences.
+    genome: Genome = None,
+        Genome to use for the bed sequences.
+
+    Returns
+    -------------------
+    DataFrame with all performance.
+    """
+    all_performance = []
+    for (X, y), task in load_all_tasks(
+        cell_line=cell_line,
+        window_size=window_size,
+    ):
+        for holdout_number, train_x, test_x, train_y, test_y in stratified_holdouts(
+            n_splits=n_splits,
+            random_state=random_state,
+            train_size=1-test_size,
+            X=X,
+            y=y,
+            task_name=task
+        ):
+            all_performance.append(train(
+                train_x, test_x, train_y, test_y,
+                build_sequences, build_fixed_model,
+                model=model,
+                task=task,
+                cell_line=cell_line,
+                holdout_number=holdout_number,
+                random_state=random_state,
+                batch_size=batch_size,
+                genome=genome
+            ))
+    return all_performance
+
+
+def train_cell_line_wrapper(kwargs) -> List:
+    return train_cell_line(**kwargs)
+
+
 def train_fixed_models(
     build_sequences: Callable,
     build_fixed_model: Callable,
@@ -158,7 +230,6 @@ def train_fixed_models(
     n_splits: int = 10,
     random_state: int = 42,
     test_size: float = 0.2,
-    valid_size: float = 0.2,
     batch_size: int = 256,
     genome: Genome = None
 ) -> pd.DataFrame:
@@ -182,8 +253,6 @@ def train_fixed_models(
         Random state to reproduce holdout.
     test_size: float = 0.2,
         Size for the test data.
-    valid_size: float = 0.2,
-        Size for the validation data.
     batch_size: int = 256,
         Batch size for the sequences.
     genome: Genome = None,
@@ -193,30 +262,31 @@ def train_fixed_models(
     -------------------
     DataFrame with all performance.
     """
-    all_performance = []
-    for cell_line in tqdm(get_cell_lines(), desc="Cell lines"):
-        for (X, y), task in load_all_tasks(
-            cell_line=cell_line,
-            window_size=window_size,
-        ):
-            for holdout_number, train_x, test_x, train_y, test_y in stratified_holdouts(
-                n_splits=n_splits,
-                random_state=random_state,
-                train_size=1-test_size,
-                X=X,
-                y=y,
-                task_name=task
-            ):
-                all_performance.append(train(
-                    train_x, test_x, train_y, test_y,
-                    build_sequences, build_fixed_model,
-                    model=model,
-                    task=task,
-                    cell_line=cell_line,
-                    holdout_number=holdout_number,
-                    random_state=random_state,
-                    valid_size=valid_size,
-                    batch_size=batch_size,
-                    genome=genome
-                ))
+    threads_number = min(get_gpu_number(), len(get_cell_lines()))
+    with Pool(threads_number) as p:
+        all_performance = [
+            perf
+            for perfs in tqdm(
+                p.imap(
+                    train_cell_line_wrapper,
+                    (
+                        dict(
+                            build_sequences=build_sequences,
+                            build_fixed_model=build_fixed_model,
+                            model=model,
+                            cell_line=cell_line,
+                            window_size=window_size,
+                            n_splits=n_splits,
+                            random_state=random_state,
+                            test_size=test_size
+                        )
+                        for cell_line in get_cell_lines()
+                    )
+                ),
+                desc="Parsing cell lines",
+                total=len(get_cell_lines())
+            )
+            for perf in perfs
+        ]
+
     return pd.concat(all_performance)
