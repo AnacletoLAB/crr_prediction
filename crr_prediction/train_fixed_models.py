@@ -193,7 +193,6 @@ def train_cell_line(
     DataFrame with all performance.
     """
     genome = Genome(genome_assembly)
-    enable_subgpu_training()
     all_performance = []
     for (X, y), task in load_all_tasks(
         cell_line=cell_line,
@@ -207,7 +206,6 @@ def train_cell_line(
             y=y,
             task_name=task
         ):
-            import setGPU
             all_performance.append(train(
                 train_x, test_x, train_y, test_y,
                 build_sequences, build_fixed_model,
