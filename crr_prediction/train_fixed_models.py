@@ -1,7 +1,7 @@
 """Method to train the meta models on all cell lines."""
 from typing import Dict, Callable, Tuple
 import os
-import silence_tensorflow.auto
+#import silence_tensorflow.auto
 import pandas as pd
 from tqdm.auto import tqdm
 from epigenomic_dataset import load_all_tasks
@@ -104,7 +104,7 @@ def train(
         validation_data=test.rasterize(verbose=False),
         batch_size=batch_size,
         epochs=100,
-        verbose=False,
+        #verbose=False,
         callbacks=[EarlyStopping(
             monitor="AUPRC",
             mode="max",
@@ -154,6 +154,7 @@ def train_fixed_models(
     build_sequences: Callable,
     build_fixed_model: Callable,
     model: str,
+    only_cell_line: str = None,
     window_size: int = 256,
     n_splits: int = 10,
     random_state: int = 42,
@@ -193,8 +194,11 @@ def train_fixed_models(
     -------------------
     DataFrame with all performance.
     """
+    import setGPU
     all_performance = []
-    for cell_line in tqdm(get_cell_lines(), desc="Cell lines"):
+    for cell_line in get_cell_lines():
+        if only_cell_line is not None and cell_line != only_cell_line:
+            continue
         for (X, y), task in load_all_tasks(
             cell_line=cell_line,
             window_size=window_size,
