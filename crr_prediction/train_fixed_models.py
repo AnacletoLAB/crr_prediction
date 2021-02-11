@@ -97,14 +97,14 @@ def train(
         random_state=random_state
     )
 
-    model: Model = build_fixed_model(train[0][0].shape[1])
+    fixed_model: Model = build_fixed_model(train[0][0].shape[1])
 
-    history = pd.DataFrame(model.fit(
+    history = pd.DataFrame(fixed_model.fit(
         *train.rasterize(verbose=False),
         validation_data=test.rasterize(verbose=False),
         batch_size=batch_size,
         epochs=100,
-        #verbose=False,
+        verbose=False,
         callbacks=[EarlyStopping(
             monitor="AUPRC",
             mode="max",
@@ -122,12 +122,12 @@ def train(
     )
 
     train_performance = dict(zip(
-        model.metrics_names,
-        model.evaluate(train, verbose=False)
+        fixed_model.metrics_names,
+        fixed_model.evaluate(train, verbose=False)
     ))
     test_performance = dict(zip(
-        model.metrics_names,
-        model.evaluate(test, verbose=False)
+        fixed_model.metrics_names,
+        fixed_model.evaluate(test, verbose=False)
     ))
 
     metadata = {
