@@ -196,7 +196,7 @@ def train_fixed_models(
     """
     import setGPU
     all_performance = []
-    for cell_line in get_cell_lines():
+    for cell_line in tqdm(get_cell_lines(), desc="Cell lines"):
         if only_cell_line is not None and cell_line != only_cell_line:
             continue
         for (X, y), task in load_all_tasks(
