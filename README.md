@@ -1,5 +1,7 @@
 # crr_prediction
-Prediction of activation of cis-regulatory regions.
+Python software library implementing meta models of Bayesian Feed Forward Neural Networks (Bayesian-FFNN) and Bayesian Convolutional Neural Networks (Bayesian-CNN) that use Bayesian optimization techniques for automatic neural model selection.
+The repository includes also  experiments for the detection of active cis-regulatory regions, i.e. promoters and enhancers, in specific cell lines.
+
 
 ## Notes on installing Ray
 We need the very latest version of ray, that can be currently installed from
